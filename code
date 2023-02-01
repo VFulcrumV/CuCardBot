@@ -1,0 +1,272 @@
+from webserver import keep_alive
+import os
+import discord
+from discord.ext import commands
+from discord.ext.commands import Bot
+import random
+from random import choice
+import sqlite3
+
+
+keep_alive()
+intents = discord.Intents.all()
+client = commands.Bot(command_prefix='!!', intents=intents)
+client.remove_command("help")
+
+connection = sqlite3.connect('server.db')
+cursor = connection.cursor()
+
+
+work_incom = [
+  1, 5, 5, 5, 5, 5, 5, 10, 10, 10, 10, 10, 10, 10, 15, 15, 15, 15, 15, 15, 20,
+  20, 20, 25, 25, 30, 30, 35, 40, 45, 50, 60, 65, 70, 75, 80, 90, 100
+]
+
+common_cards = [
+    "https://ie.wampi.ru/2022/05/27/DIZAIN-BEZ-NAZVANIY775716c2d3faf21d.jpg", "https://i.ibb.co/34d8CzY/image.jpg",
+    "https://i.ibb.co/tB7tS1B/1.jpg", "https://i.ibb.co/bm0vHhQ/22.jpg", "https://i.ibb.co/jHDGQQy/21.jpg",
+    "https://i.ibb.co/M6f9R8b/19.jpg", "https://i.ibb.co/hKZM2bq/24.jpg"
+]
+uncommon_cards = [
+    "https://i.ibb.co/KzrvVth/2.jpg", "https://i.ibb.co/BwDRQB5/3.jpg", "https://i.ibb.co/gvKLzYM/16.jpg",
+    "https://i.ibb.co/6mkMZwg/17.jpg", "https://i.ibb.co/98qwcBt/23.jpg"
+]
+rares_cards = [
+    "https://i.ibb.co/frVtwNg/25.jpg", "https://i.ibb.co/W0LXHKc/26.jpg", "https://i.ibb.co/zs53NHb/27.jpg",
+    "https://i.ibb.co/zSJcByt/28.jpg"
+]
+epic_cards = [
+    "https://i.ibb.co/JvNpV0k/5.jpg", "https://i.ibb.co/r7TSnds/4.jpg", "https://i.ibb.co/JKMrsh2/14.jpg",
+    "https://i.ibb.co/TtbmVhq/18.jpg"
+]
+mythic_cards = [
+    "https://i.ibb.co/FXBZxcr/6.jpg", "https://i.ibb.co/gFR81sZ/7.jpg", "https://i.ibb.co/JnYLGpD/12.jpg",
+    "https://i.ibb.co/mTkB2NH/20.jpg"
+]
+legendary_cards = [
+    "https://i.ibb.co/fxHTHjs/9.jpg", "https://i.ibb.co/mCcGTRg/8.jpg", "https://i.ibb.co/vjjz7R5/hqdefault-1-1.png"
+]
+secret_cards = [
+    "https://i.ibb.co/vHqXBLX/11.jpg", "https://i.ibb.co/PGW7tsH/10.jpg", "https://i.ibb.co/Kzy7CMV/13.jpg"
+]
+chances = [
+    "rare", "rare", "rare", "rare", "rare", "rare", "rare", "rare", "rare", "rare", "common",
+    "common", "common", "common", "common", "common", "common", "common", "common", "common", "common", "common",
+    "common", "common", "common", "common", "common", "common", "common", "common", "common", "common", "common",
+    "common", "common", "common", "common", "common", "common", "common", "common", "common", "common", "common",
+    "common", "common", "common", "common", "common", "common", "common", "common", "common", "common", "common",
+    "common", "common", "common", "common", "common", "common", "common", "common", "common",
+    "uncomon", "common", "common",
+    "uncommon", "uncommon", "uncommon", "uncommon", "uncommon", "uncommon", "uncommon", "uncommon", "uncomon",
+    "uncommon", "uncommon", "uncommon", "uncommon", "uncommon", "epic", "epic", "epic", "epic", "epic", "epic", "epic",
+    "mythic", "mythic", "mythic", "mythic", "secret", "secret", "legendary", "secret", "110coins", "110coins",
+    "200coins", "300coins", "404coins"
+]
+
+
+@client.event
+async def on_ready():
+    cursor.execute("""CREATE TABLE IF NOT EXISTS users (
+        name TEXT,
+        id INT,
+        cash BIGINT,
+        mem_cards INT,
+        mem_opened INT,
+        commons INT,
+        uncommons INT,
+        rares INT,
+        epics INT,
+        mythics INT,
+        secrets INT,
+        legendarys INT
+    )""")
+    for guild in client.guilds:
+        for member in guild.members:
+            if cursor.execute(f"SELECT id FROM users WHERE id = {member.id}").fetchone() is None:
+                cursor.execute(f"INSERT INTO users VALUES ('{member}', {member.id}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)")
+                connection.commit()
+            else:
+                pass
+    connection.commit()
+    print('Бот присоеденился, ура')
+
+
+@client.event
+async def on_member_join(member):
+    if cursor.execute(f"SELECT id FROM users WHERE id = {member.id}").fetchone() is None:
+        cursor.execute(f"INSERT INTO users VALUES ('{member}', {member.id}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)")
+        connection.commit()
+
+    else:
+        pass
+
+
+@client.command(aliases=["работать", "work", "зарабатывать"])
+async def __working(ctx):
+  income = choice(work_incom)
+  cursor.execute("UPDATE users SET cash = cash + {} WHERE id = {}".format(income, ctx.author.id))
+  connection.commit()
+  await ctx.send(f"**{ctx.author}**, вы заработали {income} **монеток** :coin:")
+  await ctx.message.add_reaction("✅")
+  connection.commit()
+
+@client.command(aliases = ["admin_balance", "seebalance", "see_balance", "посмотреть_баланс"])
+@commands.has_permissions(administrator=True)
+async def __balance(ctx, member: discord.Member = None):
+    if member is None:
+        member = ctx.author
+    cash = cursor.execute(f'SELECT cash FROM users WHERE id = {member.id}').fetchone()[0]
+    await ctx.send(embed=discord.Embed(description=f'Баланс пользователя *{member.name}* составляет **{cash} мемокоинов :coin:  ** (__только админы могут смотреть чужой баланс__)'))
+
+
+
+@client.command(aliases = ["award", "give", "выдать", "donate", "наградить", "дать"])
+@commands.has_permissions(administrator=True)
+async def __award(ctx, member: discord.Member = None, amount: int = None):
+    if member is None:
+        await ctx.send(f"**{ctx.author}**, укажите пользователя, которому хотите выдать мемокоины")
+    else:
+        if amount is None:
+            await ctx.send(f"**{ctx.author}**, укажите сумму мемокоинов, которую хотите выдать человеку :coin: ")
+        elif int(amount) < 1:
+            await ctx.send(f"**{ctx.author}**, минимальная сумма выдаваемых мемокоинов - **1** :coin: ")
+        else:
+            cursor.execute("UPDATE users SET cash = cash + {} WHERE id = {}".format(int(amount), member.id))
+            connection.commit()
+            await ctx.message.add_reaction("✅")
+            await ctx.send(f"Сумма **{amount}** мемокоинов была переведена на счёт пользователя :coin:")
+
+
+@client.command(aliases = ["take", "забрать"])
+async def __take(ctx, member: discord.Member = None, amount=None):
+    if member is None:
+        await ctx.send(f"**{ctx.author}**, укажите сперва пользователя, у которого хотите изъять мемокоины")
+    else:
+        if amount is None:
+            await ctx.send(f"**{ctx.author}**, укажите сумму мемокоинов, которую хотите изъять :coin: ")
+        elif amount == "all":
+            cursor.execute("UPDATE users SET cash = {} WHERE id = {}".format(0, member.id))
+            connection.commit()
+            await ctx.message.add_reaction("✅")
+        elif int(amount) < 1:
+            await ctx.send(f"**{ctx.author}**, минимальная сумма забираемых мемокоинов - **1** :coin: ")
+        else:
+            cursor.execute("UPDATE users SET cash = cash - {} WHERE id = {}".format(int(amount), member.id))
+            connection.commit()
+            await ctx.message.add_reaction("✅")
+            await ctx.send(f"Сумма **{amount}** мемокоинов была изъяна со счета пользователя :coin:")
+
+
+@client.command(aliases=[
+    "купить_ящик","купить_кейс", "buycrate", "buy", "кейс", "кейсы", "crate", "crates", "box", "бокс", "купить", "цена"
+])
+async def __buy_crate(ctx):
+    await ctx.send(f"**{ctx.author}**, вы желаете приобрести мемокейс за **50** мемокоинов? :coin: **Напишите** __'!!открыть'__ .")
+
+
+@client.command(aliases=["открыть", "open", "открываю"])
+async def __yes_or_no(ctx):
+    if cursor.execute("SELECT cash FROM users WHERE id = {}".format(ctx.author.id)).fetchone()[0] < 50:
+        await ctx.send(f"**{ctx.author}**, у вас недостаточно мемокоинов для покупки мемокейса :coin: ")
+        connection.commit()
+    else:
+        cursor.execute("UPDATE users SET cash = cash - {} WHERE id = {}".format(50, ctx.author.id))
+        cursor.execute("UPDATE users SET mem_opened = mem_opened + {} WHERE id = {}".format(1, ctx.author.id))
+        connection.commit()
+        reward1 = choice(chances)
+        if reward1 == "common":
+            reward2 = choice(common_cards)
+            cursor.execute("UPDATE users SET commons = + {} WHERE id = {}".format(1, ctx.author.id))
+            await ctx.send(f"**Ваша награда**")
+            await ctx.send(f"{reward2}")
+        elif reward1 == "uncommon":
+            cursor.execute("UPDATE users SET uncommons = + {} WHERE id = {}".format(1, ctx.author.id))
+            reward2 = choice(uncommon_cards)
+            await ctx.send(f"**Ваша награда**")
+            await ctx.send(f"{reward2}")
+        elif reward1 == "rare":
+            cursor.execute("UPDATE users SET rares = rares + {} WHERE id = {}".format(1, ctx.author.id))
+            reward2 = choice(uncommon_cards)
+            await ctx.send(f"**Ваша награда**")
+            await ctx.send(f"{reward2}")
+        elif reward1 == "epic":
+            cursor.execute("UPDATE users SET epics = epics + {} WHERE id = {}".format(1, ctx.author.id))
+            reward2 = choice(epic_cards)
+            await ctx.send(f"**Ваша награда**")
+            await ctx.send(f"{reward2}")
+        elif reward1 == "mythic":
+            cursor.execute("UPDATE users SET mythics = mythics + {} WHERE id = {}".format(1, ctx.author.id))
+            reward2 = choice(mythic_cards)
+            await ctx.send(f"**Ваша награда**")
+            await ctx.send(f"{reward2}")
+        elif reward1 == "secret":
+            cursor.execute("UPDATE users SET secrets = secrets + {} WHERE id = {}".format(1, ctx.author.id))
+            reward2 = choice(secret_cards)
+            await ctx.send(f"**Ваша награда**")
+            await ctx.send(f"{reward2}")
+        elif reward1 == "legendary":
+            cursor.execute("UPDATE users SET legendarys = legendarys + {} WHERE id = {}".format(1, ctx.author.id))
+            reward2 = choice(legendary_cards)
+            await ctx.send(f"**Ваша награда**")
+            await ctx.send(f"{reward2}")
+        elif reward1 == "rare":
+            reward2 = choice(rares_cards)
+            await ctx.send(f"**Ваша награда**")
+            await ctx.send(f"{reward2}")
+        elif reward1 == "110coins":
+            cursor.execute("UPDATE users SET cash = cash + {} WHERE id = {}".format(110, ctx.author.id))
+            connection.commit()
+            await ctx.send(embed=discord.Embed(description=f"**{ctx.author}**, вам выпали мемокоины. **110** мемокоинов было добавлено на ваш счёт :coin:"))
+        elif reward1 == "200coins":
+            cursor.execute("UPDATE users SET cash = cash + {} WHERE id = {}".format(200, ctx.author.id))
+            connection.commit()
+            await ctx.send(embed=discord.Embed(description=f"**{ctx.author}**, вам выпали мемокоины. **200** мемокоинов было добавлено на ваш счёт :coin:"))
+        elif reward1 == "300coins":
+            cursor.execute("UPDATE users SET cash = cash + {} WHERE id = {}".format(300, ctx.author.id))
+            connection.commit()
+            await ctx.send(embed=discord.Embed(
+                description=f"**{ctx.author}**, вам выпали мемокоины. **300** мемокоинов было добавлено на ваш счёт :coin:"))
+        elif reward1 == "404coins":
+            cursor.execute("UPDATE users SET cash = cash + {} WHERE id = {}".format(404, ctx.author.id))
+            connection.commit()
+            await ctx.send(embed=discord.Embed(
+                description=f"**{ctx.author}**, вам выпали мемокоины. **404** мемокоинов было добавлено на ваш счёт :coin:"))
+
+
+@client.command(aliases=[
+    "ящикинфо", "cratesinfo", "crateinfo", "boxinfo", "содержаниебокса", "шансы", "chances", "шанс"
+])
+async def __see_chances(ctx):
+    await ctx.send(embed=discord.Embed(
+        description=f"Мемокейс обычный стоит **50** мемокоинов. \n :coin: **Напишите** *'!!открыть'* , чтобы купить и открыть его.ᅠ ᅠᅠ ᅠ"
+                    f"\n *Шанс на обычную карту* - **55%**. \n  *Шанс на необычную карту* - **16%**. \n "
+                    f"*Шанс на редкую карту* - **10%** \n *Шанс на эпическую карту* - **7%**."
+                    f"\n *Шанс на мифическую карту* - **4%**. \n *Шанс на секретную карту* - **2%**"
+                    f"\n *Шанс на легендарную карту* - **1%**. \n *Шанс на разное кол-во мемокоинов* - **5%**"))
+
+@client.command(aliases=[
+    "инфо","профиль", "мойпрофиль", "информация", "info", "profile", "menu", "меню" 'balance', 'баланс', 'cash',
+    'кеш', "мани", "деньги", "coins", "money", "memcoins"
+])
+async def __info(ctx):
+    opened = cursor.execute(f'SELECT mem_opened FROM users WHERE id = {ctx.author.id}').fetchone()[0]
+    cash = cursor.execute(f'SELECT cash FROM users WHERE id = {ctx.author.id}').fetchone()[0]
+    commons = cursor.execute(f"SELECT commons FROM users WHERE id = {ctx.author.id}").fetchone()[0]
+    uncommons = cursor.execute(f"SELECT uncommons FROM users WHERE id = {ctx.author.id}").fetchone()[0]
+    rares = cursor.execute(f"SELECT rares FROM users WHERE id = {ctx.author.id}").fetchone()[0]
+    epics = cursor.execute(f"SELECT epics FROM users WHERE id = {ctx.author.id}").fetchone()[0]
+    mythics = cursor.execute(f"SELECT mythics FROM users WHERE id = {ctx.author.id}").fetchone()[0]
+    secrets = cursor.execute(f"SELECT secrets FROM users WHERE id = {ctx.author.id}").fetchone()[0]
+    legendarys = cursor.execute(f"SELECT legendarys FROM users WHERE id = {ctx.author.id}").fetchone()[0]
+    await ctx.send(embed=discord.Embed(
+        description=f"Ваш баланс составляет  **{cash} мемокоинов :coin:  **ᅠ ᅠ ᅠ ᅠᅠ ᅠ ᅠ ᅠᅠ   ᅠ ᅠ "
+                    f"Открыто кейсов: **{opened}**."
+                    f"\n Получено обычных карт: **{commons}**"
+                    f"\n Получено необычных карт: **{uncommons}**"
+                    f"\n Получено редких карт: **{rares}**"
+                    f"\n Получено эпических карт: **{epics}**"
+                    f"\n Получено мифических карт: **{mythics}**"
+                    f"\n Получено секретных карт: **{secrets}**"
+                    f"\n Получено легендарных карт: **{legendarys}**"))
+
+client.run("OTcxNzczOTU2NjYxMDc2MDI4.Gb9s0P.Cmc3gUbTtd0iGCiAz7x2bqUqDyVU-ZcPPSSlxM")
