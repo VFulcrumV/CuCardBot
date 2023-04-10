@@ -4,7 +4,7 @@ connection = sqlite3.connect('server.db')
 
 
 def create_start_database(self):
-    self.cursor.execute("""DROP TABLE USERS""")
+    # self.cursor.execute("""DROP TABLE USERS""")
     self.cursor.execute("""CREATE TABLE IF NOT EXISTS users (
                     name TEXT,
                     id INT,

@@ -21,13 +21,15 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_slash_command_error(self, ctx, error):
-         await ctx.response.send_message(
-             embed=disnake.Embed(
-                 description=f'Ошибка в использовании комманды',
-                 color=0xffffff
-             ),
-             ephemeral=True
-         )
+        print(error)
+        print(type(error))
+        await ctx.response.send_message(
+            embed=disnake.Embed(
+                description=f'Ошибка в использовании комманды',
+                color=0xffffff
+            ),
+            ephemeral=True
+        )
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
