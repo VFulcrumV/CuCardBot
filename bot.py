@@ -15,7 +15,7 @@ client.remove_command("help")
 connection = sqlite3.connect('server.db')
 cursor = connection.cursor()
 
-work_incom = [
+work_income = [
   1, 2, 3, 4, 5, 0, 1, 1, 2, 3,
 ]
 
@@ -39,16 +39,12 @@ legendary_cards = [
 secret_cards = [
     "battle_city_1"
 ]
-all_cards = ["bucky_o_hare_1", "dune2000_1", "metroid_1", "prince_of_persia_1", "tempest_1",
-             "contra_1", "defender_1", "elite_1", "maniac_mansion_1", "pitfall_1", "street_fighter_1", "tekken_1",
-             "donkey_kong_1", "mega_man2_1", "zero_tolerance_1", "pac_man_1", "the_legend_of_zelda_1",
-             "mortal_kombat_1", "super_mario_bros_1", "battle_city_1"]
+all_cards = common_cards + uncommon_cards + rare_cards + epic_cards + mythic_cards + legendary_cards + secret_cards
+
 drop_list = [
     "common", "uncommon", "rare", "epic", "mythic", "legendary", "secret", "80 coins",
     "125 coins", "200 coins", "260 coins", "404 coins"
 ]
-
-
 
 drop_chances = [0.500, 0.190, 0.120, 0.060, 0.025, 0.007, 0.003, 0.030, 0.020, 0.020, 0.015, 0.010]
 
@@ -127,7 +123,7 @@ class Sell(disnake.ui.View):  # класс, который позволяет п
         cursor.execute("UPDATE users SET cash = cash + {} WHERE id = {}".format(self.cost, self.author))
         cursor.execute("UPDATE users SET mem_opened = mem_opened + {} WHERE id = {}".format(1, self.author))
         connection.commit()
-        await inter.message.add_reaction("✅")
+        await inter.response.send_message.add_reaction("✅")
         self.value = True
         self.stop()
 
@@ -137,7 +133,7 @@ class Sell(disnake.ui.View):  # класс, который позволяет п
         cursor.execute(f"UPDATE users SET {self.name} = {self.name} + {1} WHERE id = {self.author}")
         cursor.execute(f"UPDATE users SET {self.rarity[0]} = {self.rarity[0]} + {1} WHERE id = {self.author}")
         connection.commit()
-        await inter.message.add_reaction("✅")
+        await inter.response.send_message.add_reaction("✅")
         self.value = False
         self.stop()
 
@@ -224,9 +220,6 @@ async def on_member_join(member):  # все кто зашёл на сервер 
         cursor.execute(f"INSERT INTO users VALUES ('{member}', {member.id}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)")
         connection.commit()
 
-    else:
-        pass
-
 
 @client.command(aliases=["дроп", "drop", "получить"])
 async def __drop(ctx):
@@ -267,7 +260,7 @@ async def __drop(ctx):
 # ПРОСТО КОММАНДА РАБОТАТЬ, ТЫ ДОЛЖЕН ПОМНИТЬ
 @client.command(aliases=["работать", "work", "зарабатывать"])
 async def __working(ctx):
-    income = choice(work_incom)
+    income = choice(work_income)
     cursor.execute("UPDATE users SET cash = cash + {} WHERE id = {}".format(income, ctx.author.id))
     connection.commit()
     await ctx.send(f"**{ctx.author}**, вы заработали {income} **монеток** :coin:")
