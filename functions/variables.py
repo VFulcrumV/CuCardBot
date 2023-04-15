@@ -5,23 +5,24 @@ work_income = [
 
 common_cards = ["bucky_o_hare_1", "dune2000_1", "metroid_1", "prince_of_persia_1", "tempest_1", "aaron_2", "froggit_2",
                 "ice_cap_2", "loox_2", "migosp_2", "moldsmal_2", "snowdrake_2", "tsunderplane_2", "vegetoid_2",
-                "vulkin_2", "whimsun_2", "woshua_2"]
+                "vulkin_2", "whimsun_2", "woshua_2", "zhenya_3", "pioner_3", "genda_3"]
 
 
 uncommon_cards = ["contra_1", "defender_1", "elite_1", "maniac_mansion_1", "astigmatism_2", "final_froggit_2",
                   "frisk_2", "gyftrot_2", "knight_knight_2", "migospel_2", "moldbygg_2",
-                  "moldessa_2", "parsnik_2", "pyrope_2", "whimsalot_2"]
+                  "moldessa_2", "parsnik_2", "pyrope_2", "whimsalot_2", "yliana_3", "viola_3", "olga_dmitrievna_3",
+                  "samanta_3"]
 
 rare_cards = ["pitfall_1", "street_fighter_1", "tekken_1", "dogamy_and_dogaressa_2", "doggo_2", "glyde_2",
-              "mad_dummy_2", "madjick_2", "shyren_2", "so_sorry_2"]
+              "mad_dummy_2", "madjick_2", "shyren_2", "so_sorry_2", "shurik_3", "electronik_3"]
 
 epic_cards = ["donkey_kong_1", "mega_man2_1", "zero_tolerance_1", "greater_dog_2", "jerry_2", "lesser_dog_2",
-              "mettaton_2", "muffet_2", "napstablook_2", "toriel_2", "undyne_2"]
+              "mettaton_2", "muffet_2", "napstablook_2", "toriel_2", "undyne_2", "slavya_3", "lena_3"]
 
 mythic_cards = ["pac_man_1", "the_legend_of_zelda_1", "alphys_2", "asgore_2", "flowey_2", "mad_mew_mew_2",
-                "nettaton_ex_2", "papyrus_2", "sans_2", "temmie_2", "undine_the_undying_2"]
+                "nettaton_ex_2", "papyrus_2", "sans_2", "temmie_2", "undine_the_undying_2", "miku_3", "ulia_3"]
 
-legendary_cards = ["mortal_kombat_1", "super_mario_bros_1", "asriel_dreemurr_2", "bad_time_sans_2"]
+legendary_cards = ["mortal_kombat_1", "super_mario_bros_1", "asriel_dreemurr_2", "bad_time_sans_2", "alice_3"]
 
 secret_cards = ["battle_city_1", "gaster_2"]
 

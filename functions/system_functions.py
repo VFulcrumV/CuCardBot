@@ -12,19 +12,22 @@ def choose_card_for_drop(rarity):
             k=1)[0]
     else:
         name = choice(v.drop_info[rarity]['cards'])
-        genre = int(name[-1])
+        if type(name[-2]) == int:
+            genre = int(name[-2]) + int(name[-1])
+        else:
+            genre = int(name[-1])
         card = name + '.png'
         cost = v.drop_info[rarity]['cost']
-        if rarity == "common" or "uncommon":
+        if rarity == "common" or rarity == "uncommon":
             for i in range(genre):
                 cost -= 1
         elif rarity == "rare":
             for i in range(genre):
                 cost -= 2
-        elif rarity == "epic" or "mythic":
+        elif rarity == "epic" or rarity == "mythic":
             for i in range(genre):
                 cost -= 5
-        elif rarity == "legendary" or "secret":
+        elif rarity == "legendary" or rarity == "secret":
             for i in range(genre):
-                cost -= 10
+                cost -= 15
         return card, cost, name
