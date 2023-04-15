@@ -1,10 +1,12 @@
 import sqlite3
-
+import disnake
+import os
+from CuCardBot.functions import variables as v
 connection = sqlite3.connect('server.db')
 
 
 def create_start_database(self):
-    # self.cursor.execute("""DROP TABLE USERS""")
+    # self.cursor.execute("""DROP TABLE users""")
     self.cursor.execute("""CREATE TABLE IF NOT EXISTS users (
                     name TEXT,
                     id INT,
@@ -18,6 +20,7 @@ def create_start_database(self):
                     mythic INT,
                     legendary INT,
                     secret INT,
+                    craftable INT,
                     bucky_o_hare_1 INT,
                     dune2000_1 INT,
                     metroid_1 INT,
@@ -37,13 +40,71 @@ def create_start_database(self):
                     the_legend_of_zelda_1 INT,
                     mortal_kombat_1 INT,
                     super_mario_bros_1 INT,
-                    battle_city_1 INT
+                    battle_city_1 INT,
+                    aaron_2 INT,
+                    froggit_2 INT,
+                    ice_cap_2 INT,
+                    loox_2 INT,
+                    migosp_2 INT,
+                    moldsmal_2 INT,
+                    snowdrake_2 INT,
+                    tsunderplane_2 INT,
+                    parsnik_2 INT,
+                    vegetoid_2 INT,
+                    vulkin_2 INT,
+                    whimsun_2 INT,
+                    woshua_2 INT,
+                    astigmatism_2 INT,
+                    final_froggit_2 INT,
+                    frisk_2 INT,
+                    gyftrot_2 INT,
+                    knight_knight_2 INT,
+                    migospel_2 INT,
+                    moldbygg_2 INT,
+                    moldessa_2 INT,
+                    pyrope_2 INT,
+                    whimsalot_2 INT,
+                    dogamy_and_dogaressa_2 INT,
+                    doggo_2 INT,
+                    dummy_2 INT,
+                    glyde_2 INT,
+                    mad_dummy_2 INT,
+                    madjick_2 INT,
+                    shyren_2 INT,
+                    so_sorry_2 INT,
+                    greater_dog_2 INT,
+                    jerry_2 INT,
+                    lesser_dog_2 INT,
+                    mettaton_2 INT,
+                    muffet_2 INT,
+                    napstablook_2 INT,
+                    toriel_2 INT,
+                    undyne_2 INT,
+                    alphys_2 INT,
+                    asgore_2 INT,
+                    flowey_2 INT,
+                    mad_mew_mew_2 INT,
+                    mettaton_ex_2 INT,
+                    papyrus_2 INT,
+                    sans_2 INT,
+                    temmie_2 INT,
+                    undine_the_undying_2 INT,
+                    asriel_dreemurr_2 INT,
+                    bad_time_sans_2 INT,
+                    chara_dreemurr INT,
+                    frisk INT,
+                    mad_mew_mew INT,
+                    mettaton_neo INT,
+                    gaster_2 INT
                 );""")
     for guild in self.bot.guilds:
         for member in guild.members:
-            if self.cursor.execute(f"SELECT id FROM users WHERE id = {member.id}").fetchone() is None:
-                self.cursor.execute(f"INSERT INTO users VALUES ('{member}', {member.id}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
-                                    f"0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)")
+            if self.cursor.execute(f"SELECT id FROM users WHERE id = ?", (member.id, )).fetchone() is None:
+                self.cursor.execute(f"INSERT INTO users VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
+                                    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
+                                    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
+                                    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
+                                    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)", (str(member), member.id))
                 self.connection.commit()
             else:
                 pass
@@ -51,9 +112,26 @@ def create_start_database(self):
 
 
 def add_new_member(self, member):
-    if self.cursor.execute(f"SELECT id FROM users WHERE id = {member.id}").fetchone() is None:
-        self.cursor.execute(f"INSERT INTO users VALUES ('{member}', {member.id}, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)")
+    if self.cursor.execute(f"SELECT id FROM users WHERE id = ?", (member.id, )).fetchone() is None:
+        self.cursor.execute(f"INSERT INTO users VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
+                            "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
+                            "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
+                            "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
+                            "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)", (str(member), member.id))
         self.connection.commit()
+
+
+def see_card(self, card, author):
+    author = str(author)
+    full_name = card + ".png"
+    for i in list(v.drop_info.keys()):
+        if os.path.exists(f"./cards/{i}/{full_name}"):
+            have_card = self.cursor.execute(f"""SELECT {card} from users WHERE id = {author}""").fetchall()
+            if have_card[0][0] > 0:
+                a = f"./cards/{i}/{full_name}"
+                return a
+
+    return "no"
 
 
 def sell_card(self):

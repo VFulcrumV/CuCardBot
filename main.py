@@ -9,9 +9,7 @@ from disnake.ext import commands
 bot = commands.Bot(
     command_prefix='!!',
     help_command=None,
-    owner_id=580916534550200350,
     intents=disnake.Intents.all(),
-    test_guilds=[1004582832687034418]
 )
 
 
@@ -38,4 +36,5 @@ for filename in os.listdir('cogs'):
         bot.load_extension(f'cogs.{filename[:-3]}')
 
 if __name__ == '__main__':
-    bot.run('token')
+    bot.run('OTcxNzczOTU2NjYxMDc2MDI4.GFhv7K.WEwxKXirz4L3iasqJtUFuVkO_RsestCoY2W42o')
+    print("💓 Бот запущен 💓")

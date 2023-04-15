@@ -15,6 +15,16 @@ def choose_card_for_drop(rarity):
         genre = int(name[-1])
         card = name + '.png'
         cost = v.drop_info[rarity]['cost']
-        for i in range(genre):
-            cost -= 1
+        if rarity == "common" or "uncommon":
+            for i in range(genre):
+                cost -= 1
+        elif rarity == "rare":
+            for i in range(genre):
+                cost -= 2
+        elif rarity == "epic" or "mythic":
+            for i in range(genre):
+                cost -= 5
+        elif rarity == "legendary" or "secret":
+            for i in range(genre):
+                cost -= 10
         return card, cost, name

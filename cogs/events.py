@@ -21,26 +21,17 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_slash_command_error(self, ctx, error):
-        print(error)
-        print(type(error))
-        await ctx.response.send_message(
-            embed=disnake.Embed(
-                description=f'Ошибка в использовании комманды',
-                color=0xffffff
-            ),
-            ephemeral=True
-        )
+        await ctx.send(f'Ошибка в использовании комманды: {error}'
+                       f'Тип ошибки: {type(error)}', ephemeral=True)
+        print(f'Ошибка в использовании комманды: {error}')
+        print(f'Тип ошибки: {type(error)}')
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        await ctx.response.send_message(
-            embed=disnake.Embed(
-                description=f'Ошибка в использовании комманды: {error}'
-                            f'Тип ошибки: {type(error)}',
-                color=0xff00ff
-            ),
-            ephemeral=True
-        )
+        await ctx.send(f'Ошибка в использовании комманды: {error}'
+                       f'Тип ошибки: {type(error)}')
+        print(f'Ошибка в использовании комманды: {error}')
+        print(f'Тип ошибки: {type(error)}')
 
 
 def setup(bot):
