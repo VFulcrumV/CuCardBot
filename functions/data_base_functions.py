@@ -6,7 +6,7 @@ connection = sqlite3.connect('server.db')
 
 
 def create_start_database(self):
-    self.cursor.execute("""DROP TABLE users""")
+    # self.cursor.execute("""DROP TABLE users""")
     self.cursor.execute("""CREATE TABLE IF NOT EXISTS users (
                     name TEXT,
                     id INT,
@@ -109,7 +109,19 @@ def create_start_database(self):
                     lena_3 INT,
                     miku_3 INT,
                     ulia_3 INT,
-                    alice_3 INT
+                    alice_3 INT,
+                    ikuno_4 INT,
+                    futoshi_4 INT,
+                    nana_4 INT,
+                    mitsuru_4 INT,
+                    goro_4 INT,
+                    hero_4 INT,
+                    zorome_4 INT,
+                    kokoro_4 INT,
+                    miku_4 INT,
+                    zero_zero_one_4 INT,
+                    ichigo_4 INT,
+                    zero_two INT
                     
                 );""")
     for guild in self.bot.guilds:
@@ -119,7 +131,8 @@ def create_start_database(self):
                                     "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
                                     "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
                                     "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
-                                    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+                                    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,"
+                                    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
                                     (str(member), member.id))
                 self.connection.commit()
             else:
@@ -133,7 +146,8 @@ def add_new_member(self, member):
                             "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
                             "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
                             "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
-                            "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+                            "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,"
+                            "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
                             (str(member), member.id))
         self.connection.commit()
 
