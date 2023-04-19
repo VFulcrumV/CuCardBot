@@ -36,5 +36,5 @@ for filename in os.listdir('cogs'):
         bot.load_extension(f'cogs.{filename[:-3]}')
 
 if __name__ == '__main__':
-    bot.run('OTcxNzczOTU2NjYxMDc2MDI4.GPdaEN.7yULVrHau-H57rZneVObf7zsUB-oxhRSPfzNXU')
-    print("💓 Бот запущен 💓")
+    bot.run('MTA4ODgyOTU4Mjk1OTk4ODc3Nw.GgdRDH.jqEyN2i_tkcGshoyTUyxWXEyYdYlEjUplOyBWE')
+

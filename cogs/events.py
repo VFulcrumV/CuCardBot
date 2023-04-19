@@ -28,8 +28,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        await ctx.send(f'Ошибка в использовании комманды: {error}'
-                       f'Тип ошибки: {type(error)}')
+        await ctx.send(f'Ошибка в использовании комманды: {error}\n Тип ошибки: {type(error)}')
         print(f'Ошибка в использовании комманды: {error}')
         print(f'Тип ошибки: {type(error)}')
 
