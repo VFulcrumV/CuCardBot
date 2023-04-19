@@ -114,16 +114,7 @@ def create_start_database(self):
                 );""")
     for guild in self.bot.guilds:
         for member in guild.members:
-            if self.cursor.execute(f"SELECT id FROM users WHERE id = ?", (member.id, )).fetchone() is None:
-                self.cursor.execute(f"INSERT INTO users VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
-                                    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
-                                    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
-                                    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
-                                    "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
-                                    (str(member), member.id))
-                self.connection.commit()
-            else:
-                pass
+            add_new_member(self, member)
     self.connection.commit()
 
 

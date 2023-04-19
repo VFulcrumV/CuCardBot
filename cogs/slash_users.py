@@ -8,21 +8,22 @@ from disnake.ext import commands
 from CuCardBot.functions import data_base_functions as db, variables as v, buttons, system_functions as sf
 
 
-class Users(commands.Cog):
+class SlashUsers(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.connection = db.connection
         self.cursor = self.connection.cursor()
 
-    @commands.command(name="посмотреть", aliases=["see"])
+    @commands.slash_command(name='see')
     async def see(self, ctx, name=None):
         a = db.see_card(self, name, ctx.author.id)
         if a == "no":
-            await ctx.send(f"{ctx.author.mention}, карточки **{name}** у вас нет или вы ввели название неправильно.",)
+            await ctx.send(f"{ctx.author.mention}, карточки **{name}** у вас нет или вы ввели название неправильно.",
+                           ephemeral=True)
         else:
             await ctx.send(f"{ctx.author.mention}", file=disnake.File(a))
 
-    @commands.command(name="дроп", aliases=["drop"])
+    @commands.slash_command(name='drop')
     async def drop(self, ctx):
         if f"{ctx.author}" in v.time_limits_per_drop:
             time_left = v.time_limits_per_drop.get(f"{ctx.author}").replace(microsecond=0)
@@ -62,9 +63,10 @@ class Users(commands.Cog):
             else:
                 await ctx.send(
                     f"{ctx.author.mention}, вы сможете использовать дроп только через {time_left}",
+                    ephemeral=True
                 )
 
-    @commands.command(name="работать", aliases=["раб", "work", "working"])
+    @commands.slash_command(name="work")
     async def work(self, ctx):
         income = random.choice([1, 2, 3, 4, 5, 0, 1, 1, 2, 3])
         db.give_take_money(self, income, ctx.author.id, '+')
@@ -72,7 +74,11 @@ class Users(commands.Cog):
         await ctx.send(f"**{ctx.author}**, вы заработали {income} **монеток** :coin:")
         db.give_take_money(self, income, ctx.author.id, '+')
 
-    @commands.command(name="шансы", aliases=["chances", "дропинфо", "dropinfo"])
+    @commands.slash_command()
+    async def buy_box(self, ctx):
+        pass
+
+    @commands.slash_command(name="chances")
     async def check_drop_chances(self, ctx):
         await ctx.send(embed=disnake.Embed(
             description=f"Дроп ничего не стоит, активируется по комманде /drop раз в 4 минуты."
@@ -81,7 +87,7 @@ class Users(commands.Cog):
                         f"\n *Шанс на мифическую карту* - **3.25%**. \n *Шанс на легендарную карту* - **0.9%**"
                         f"\n *Шанс на секретную карту* - **0.35%**. \n *Шанс на разное кол-во мемокоинов* - **7%**"))
 
-    @commands.command(name="инвентарь", aliases=["карты", "inventory", "cards"])
+    @commands.slash_command(name="inventory")
     async def inventory(self, ctx):
         records = self.cursor.execute(f"""SELECT * from users WHERE id = {ctx.author.id}""").fetchall()
         counter = 0
@@ -101,7 +107,7 @@ class Users(commands.Cog):
             description=f" **--ИНВЕНТАРЬ--** \n"
                         f"{cards}"))
 
-    @commands.command(name="профиль", aliases=["меню", "баланс", "balance"])
+    @commands.slash_command(name="profile")
     async def profile(self, ctx):
         opened = self.cursor.execute(f'SELECT mem_opened FROM users WHERE id = {ctx.author.id}').fetchone()[0]
         cash = self.cursor.execute(f'SELECT cash FROM users WHERE id = {ctx.author.id}').fetchone()[0]
@@ -112,11 +118,10 @@ class Users(commands.Cog):
         mythics = self.cursor.execute(f"SELECT mythic FROM users WHERE id = {ctx.author.id}").fetchone()[0]
         secrets = self.cursor.execute(f"SELECT secret FROM users WHERE id = {ctx.author.id}").fetchone()[0]
         legendarys = self.cursor.execute(f"SELECT legendary FROM users WHERE id = {ctx.author.id}").fetchone()[0]
-        craftable = self.cursor.execute(f"SELECT craftable FROM users WHERE id = {ctx.author.id}").fetchone()[0]
         await ctx.send(embed=disnake.Embed(
             description=f" **--ПРОФИЛЬ--**"
                         f"\n"
-                        f"Ваш баланс составляет  **{cash} мемокоинов :coin:  **ᅠ ᅠ ᅠ ᅠᅠ ᅠ ᅠ ᅠᅠ   ᅠ ᅠ "
+                        f"Ваш баланс составляет  **{cash} мемокоинов :coin:  **"
                         f"Получено карт: **{opened}**."
                         f"\n Получено обычных карт: **{commons}**"
                         f"\n Получено необычных карт: **{uncommons}**"
@@ -126,7 +131,7 @@ class Users(commands.Cog):
                         f"\n Получено легендарных карт: **{legendarys}**"
                         f"\n Получено секретных карт: **{secrets}**"))
 
-    @commands.command(name="помощь", aliases=["help"])
+    @commands.slash_command(name="help")
     async def help_commands(self, ctx):
         await ctx.send(embed=disnake.Embed(
             description=f"*Комманды:* \n **!!(дропинфо/шансы)**,  **!!(профиль/баланс/меню)**,  **!!(работать/work)**, "
@@ -134,4 +139,4 @@ class Users(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Users(bot))
+    bot.add_cog(SlashUsers(bot))
