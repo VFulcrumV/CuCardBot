@@ -6,7 +6,7 @@ connection = sqlite3.connect('server.db')
 
 
 def create_start_database(self):
-    self.cursor.execute("""DROP TABLE users""")
+    # self.cursor.execute("""DROP TABLE users""")
     self.cursor.execute("""CREATE TABLE IF NOT EXISTS users (
                     name TEXT,
                     id INT,
@@ -109,8 +109,39 @@ def create_start_database(self):
                     lena_3 INT,
                     miku_3 INT,
                     ulia_3 INT,
-                    alice_3 INT
-                    
+                    alice_3 INT,
+                    ikuno_4 INT,
+                    futoshi_4 INT,
+                    nana_4 INT,
+                    bim_5 INT,
+                    fox_devil_5 INT,
+                    garugari_5 INT,
+                    katana_man_5 INT,
+                    nyako_5 INT,
+                    reze_5 INT,
+                    tomato_devil_5 INT,
+                    mitsuru_4 INT,
+                    goro_4 INT,
+                    kishibe_5 INT,
+                    kwanshi_5 INT,
+                    tendo_michiko_5 INT,
+                    hero_4 INT,
+                    zorome_4 INT,
+                    angel_5 INT,
+                    nayuta_5 INT,
+                    kokoro_4 INT,
+                    miku_4 INT,
+                    himeno_5 INT,
+                    kobeni_5 INT,
+                    pochita_5 INT,
+                    zero_zero_one_4 INT,
+                    ichigo_4 INT,
+                    denji_5 INT,
+                    hayakawa_aki_5 INT,
+                    power_5, INT,
+                    zero_two_4 INT,
+                    makima_5 INT,
+                    chainsaw_man_5 INT
                 );""")
     for guild in self.bot.guilds:
         for member in guild.members:
@@ -124,7 +155,9 @@ def add_new_member(self, member):
                             "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
                             "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
                             "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
-                            "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+                            "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
+                            "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "
+                            "0, 0, 0, 0, 0)",
                             (str(member), member.id))
         self.connection.commit()
 
@@ -156,4 +189,19 @@ def take_card(self):
 
 def give_take_money(self, amount, user_id, operand):
     self.cursor.execute("UPDATE users SET cash = cash {} {} WHERE id = {}".format(operand, int(amount), user_id))
+    self.connection.commit()
+
+
+def number_of_cards_in_inv(self):
+    num_of_cards = self.cursor.execute(f'SELECT {self.name} FROM users WHERE id = {self.author}').fetchone()[0]
+    return num_of_cards
+
+
+def member_money(self):
+    money = self.cursor.execute(f'SELECT cash FROM users WHERE id = {self.author}').fetchone()[0]
+    return money
+
+
+def take_away_card(self, author, card, num):
+    self.cursor.execute(f"UPDATE users SET {self.name} = {self.name} - {num} WHERE id = {author}")
     self.connection.commit()
