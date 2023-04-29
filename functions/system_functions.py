@@ -42,9 +42,7 @@ def crafting_cards(name):
     rarity = "nothing"
     rarity_after_crafting = ""
     fullname = name + '.png'
-    end_card = ""
     variants_of_end_cards = []
-    cost = 0
 
     for i in v.all_rarities:
         if rarity_after_crafting == "":

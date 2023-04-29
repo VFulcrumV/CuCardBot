@@ -33,12 +33,10 @@ secret_cards = ["battle_city_1", "gaster_2"]
 
 craftable_cards = ["chara_dreemurr", "frisk", "mad_mew_mew", "mettaton_neo", "nettaton_ex_2"]
 
-all_cards = sorted(list(set(common_cards + uncommon_cards + rare_cards + epic_cards + mythic_cards +\
-            legendary_cards + secret_cards + craftable_cards)))
+all_cards = sorted(list(set(common_cards + uncommon_cards + rare_cards + epic_cards + mythic_cards +
+                            legendary_cards + secret_cards + craftable_cards)))
 
-bd_params = ['cards_opened', 'common',
-    'uncommon', 'rare', 'epic', 'mythic', 'legendary', 'secret',
-    'craftable']
+bd_params = ['cards_opened', 'common', 'uncommon', 'rare', 'epic', 'mythic', 'legendary', 'secret', 'craftable']
 
 bd_table_create = f'''CREATE TABLE IF NOT EXISTS users (
                     name TEXT,

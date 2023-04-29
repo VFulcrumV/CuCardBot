@@ -5,6 +5,7 @@ connection = sqlite3.connect('server.db')
 
 
 def create_start_database(self):
+    # self.cursor.execute("""DROP TABLE users""")
     self.cursor.execute(v.bd_table_create)
     for guild in self.bot.guilds:
         for member in guild.members:
@@ -35,13 +36,17 @@ def see_card(self, card, author):
 
 def sell_card(self):
     give_take_money(self, self.cost, self.author, '+')
-    self.cursor.execute("UPDATE users SET mem_opened = mem_opened + {} WHERE id = {}".format(1, self.author))
+    self.cursor.execute("UPDATE users SET cards_opened = cards_opened + {} WHERE id = {}".format(1, self.author))
     self.connection.commit()
 
 
 def take_card(self):
     self.cursor.execute(f"UPDATE users SET {self.name} = {self.name} + {1} WHERE id = {self.author}")
-    self.cursor.execute(f"UPDATE users SET {self.rarity} = {self.rarity} + {1} WHERE id = {self.author}")
+    self.connection.commit()
+
+
+def increase_rarity(self, rarity):
+    self.cursor.execute(f"UPDATE users SET {rarity} = {rarity} + {1} WHERE id = {self.author}")
     self.connection.commit()
 
 
@@ -50,8 +55,8 @@ def give_take_money(self, amount, user_id, operand):
     self.connection.commit()
 
 
-def number_of_cards_in_inv(self):
-    num_of_cards = self.cursor.execute(f'SELECT {self.name} FROM users WHERE id = {self.author}').fetchone()[0]
+def number_of_cards_in_inv(self, card, author):
+    num_of_cards = self.cursor.execute(f'SELECT {card} FROM users WHERE id = {author}').fetchone()[0]
     return num_of_cards
 
 
@@ -61,5 +66,5 @@ def member_money(self):
 
 
 def take_away_card(self, author, card, num):
-    self.cursor.execute(f"UPDATE users SET {self.name} = {self.name} - {num} WHERE id = {author}")
+    self.cursor.execute(f"UPDATE users SET {card} = {card} - {num} WHERE id = {author}")
     self.connection.commit()

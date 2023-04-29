@@ -14,8 +14,8 @@ class SlashUsers(commands.Cog):
         self.connection = db.connection
         self.cursor = self.connection.cursor()
 
-    @commands.slash_command(name="upgrade", description="Получить из двух одинаковых карточек"
-                                                      " карточку выше по редкости того же поколения")
+    @commands.slash_command(name="upgrade", description="Получить из двух одинаковых карточек "
+                                                        "карточку выше по редкости того же поколения")
     async def upgrade(self, ctx, name=None):
         crafting = sf.crafting_cards(name)
         if crafting[0] == "wrong card":
@@ -152,7 +152,8 @@ class SlashUsers(commands.Cog):
                         f"**!!(работать/work)**, \n "
                         f" **!!(дроп/drop)**, \n **!!(карты/инвентарь)**, \n"
                         f" **!!(see/посмотреть)** (название карточки) - посмотреть на карточку "
-                        f"(только если она в инвентаре), \n**!!(улучшить/upgrade)** (название карточки) - крафтится карточка"
+                        f"(только если она в инвентаре), \n**!!(улучшить/upgrade)** (название карточки)"
+                        f" - крафтится карточка"
                         f" следуюшей редкости того же поколения, но нужно иметь 2 изначальной карточки и опр. кол-во"
                         f"монет."))
 
