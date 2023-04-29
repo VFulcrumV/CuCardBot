@@ -1,7 +1,8 @@
 import disnake
+import random
 from disnake.ext import commands
 
-from CuCardBot.functions import data_base_functions as db
+from CuCardBot.functions import data_base_functions as db, buttons, variables as v, system_functions as sf
 
 
 class SlashModerators(commands.Cog):
@@ -9,6 +10,33 @@ class SlashModerators(commands.Cog):
         self.bot = bot
         self.connection = db.connection
         self.cursor = self.connection.cursor()
+
+    @commands.slash_command(name="admin_drop", description="Гораздо более везучий дроп, для админов")
+    @commands.has_permissions(administrator=True)
+    async def admin_drop_slash(self, ctx):
+        weights = list(map(lambda val: val['drop_chance'], v.admin_drop_info.values()))
+        rarity = random.choices(
+            list(v.drop_info.keys()),
+            weights=weights,
+            k=1)[0]
+        drop = sf.choose_card_for_drop(rarity)
+        if rarity == 'coins':
+            await ctx.send(f"{ctx.author.mention}, **поздравляем**, вы получили **{drop}** :coin: монет!")
+            db.give_take_money(self, drop, ctx.author.id, '+')
+
+        else:
+            cost = drop[1]
+            name = drop[2]
+            await ctx.send(
+                f"{ctx.author.mention}, вы получили **{rarity}** карточку, поздравляем!",
+                file=disnake.File(f"./cards/{rarity}/{drop[0]}")
+            )
+            sell_or_take = buttons.SellTakeButtons(cost, name, ctx.author.id, rarity)
+            await ctx.send(
+                f" {ctx.author.mention}Вы хотите оставить **{name}** "
+                f"или продать **{name}** за **{cost}** :coin:?",
+                view=sell_or_take
+            )
 
     @commands.slash_command(name="check_user_balance")
     @commands.has_permissions(administrator=True)

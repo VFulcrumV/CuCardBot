@@ -33,12 +33,22 @@ secret_cards = ["battle_city_1", "gaster_2"]
 
 craftable_cards = ["chara_dreemurr", "frisk", "mad_mew_mew", "mettaton_neo", "nettaton_ex_2"]
 
-all_cards = common_cards + uncommon_cards + rare_cards + epic_cards + mythic_cards +\
-            legendary_cards + secret_cards + craftable_cards
+all_cards = sorted(list(set(common_cards + uncommon_cards + rare_cards + epic_cards + mythic_cards +\
+            legendary_cards + secret_cards + craftable_cards)))
+
+bd_params = ['cards_opened', 'common',
+    'uncommon', 'rare', 'epic', 'mythic', 'legendary', 'secret',
+    'craftable']
+
+bd_table_create = f'''CREATE TABLE IF NOT EXISTS users (
+                    name TEXT,
+                    id INT,
+                    cash BIGINT, {" INT, ".join(bd_params + all_cards)} INT);'''
 
 time_limits_per_drop = {}
 
-all_rarities = ["craftable", "common", "uncommon", "rare", "epic", "mythic", "legendary", "secret"]
+all_rarities = bd_params[1:]
+
 
 drop_info = {
     "craftable": {
@@ -75,6 +85,51 @@ drop_info = {
         'cards': secret_cards},
     'coins': {
         'drop_chance': 7.75,
+        'coins': {
+            80: 0.316,
+            125: 0.242,
+            200: 0.179,
+            260: 0.158,
+            404: 0.105
+        }
+    }
+}
+
+admin_drop_info = {
+    "craftable": {
+        'drop_chance': 0,
+        'cost': 500,
+        'cards': craftable_cards},
+    'common': {
+        'drop_chance': 2,
+        'cost': 26,
+        'cards': common_cards},
+    'uncommon': {
+        'drop_chance': 21,
+        'cost': 56,
+        'cards': uncommon_cards},
+    'rare': {
+        'drop_chance': 24.5,
+        'cost': 82,
+        'cards': rare_cards},
+    'epic': {
+        'drop_chance': 17,
+        'cost': 175,
+        'cards': epic_cards},
+    'mythic': {
+        'drop_chance': 13.5,
+        'cost': 305,
+        'cards': mythic_cards},
+    'legendary': {
+        'drop_chance': 8.85,
+        'cost': 810,
+        'cards': legendary_cards},
+    'secret': {
+        'drop_chance': 5.3,
+        'cost': 1310,
+        'cards': secret_cards},
+    'coins': {
+        'drop_chance': 7.85,
         'coins': {
             80: 0.316,
             125: 0.242,

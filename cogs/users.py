@@ -92,18 +92,28 @@ class Users(commands.Cog):
     async def check_drop_chances(self, ctx):
         await ctx.send(embed=disnake.Embed(
             description=f"Дроп ничего не стоит, активируется по комманде /drop раз в 4 минуты."
-                        f"\n *Шанс на обычную карту* - **45%**. \n  *Шанс на необычную карту* - **21%**. \n "
+                        f"\n *Шанс на обычную карту* - **45%**. \n *Шанс на необычную карту* - **21%**. \n "
                         f"*Шанс на редкую карту* - **14,5%** \n *Шанс на эпическую карту* - **7%**."
                         f"\n *Шанс на мифическую карту* - **3.5%**. \n *Шанс на легендарную карту* - **0.85%**"
                         f"\n *Шанс на секретную карту* - **0.30%**. \n *Шанс на разное кол-во мемокоинов* - **7.75%**"))
 
     @commands.command(name="инвентарь", aliases=["карты", "inventory", "cards"])
     async def inventory(self, ctx):
-        pass
+        data = self.cursor.execute(f"""SELECT * from users WHERE id = {ctx.author.id}""").fetchall()[0][12:]
+        cards_data = []
+        count = 1
+        for el in zip(v.all_cards, data):
+            if el[1] != 0:
+                cards_data.append(f'{count}) {el[0]}\t\t\t\t{el[1]}шт.\n')
+                count += 1
+        cards = ''.join(cards_data)
+        await ctx.send(embed=disnake.Embed(
+            description=f" **--ИНВЕНТАРЬ--** \n"
+                        f"{cards}"))
 
     @commands.command(name="профиль", aliases=["меню", "баланс", "balance"])
     async def profile(self, ctx):
-        opened = self.cursor.execute(f'SELECT mem_opened FROM users WHERE id = {ctx.author.id}').fetchone()[0]
+        opened = self.cursor.execute(f'SELECT cards_opened FROM users WHERE id = {ctx.author.id}').fetchone()[0]
         cash = self.cursor.execute(f'SELECT cash FROM users WHERE id = {ctx.author.id}').fetchone()[0]
         commons = self.cursor.execute(f"SELECT common FROM users WHERE id = {ctx.author.id}").fetchone()[0]
         uncommons = self.cursor.execute(f"SELECT uncommon FROM users WHERE id = {ctx.author.id}").fetchone()[0]
@@ -124,7 +134,8 @@ class Users(commands.Cog):
                         f"\n Получено эпических карт: **{epics}**"
                         f"\n Получено мифических карт: **{mythics}**"
                         f"\n Получено легендарных карт: **{legendarys}**"
-                        f"\n Получено секретных карт: **{secrets}**"))
+                        f"\n Получено секретных карт: **{secrets}**"
+                        f"\n Созданно карт: **{craftable}**"))
 
     @commands.command(name="помощь", aliases=["help"])
     async def help_commands(self, ctx):

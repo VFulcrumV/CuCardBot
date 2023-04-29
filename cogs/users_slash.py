@@ -36,7 +36,7 @@ class SlashUsers(commands.Cog):
         a = db.see_card(self, name, ctx.author.id)
         print(a)
         if a == "no":
-            await ctx.send(f"{ctx.author.mention}, карточки **{name}** у вас нет или вы ввели название неправильно.",
+            await ctx.send(f"В инвентаре карточка с таким названием отсутствует",
                            ephemeral=True)
         else:
             await ctx.send(f"{ctx.author.mention}", file=disnake.File(a))
@@ -107,11 +107,21 @@ class SlashUsers(commands.Cog):
 
     @commands.slash_command(name="inventory", description="Просмотреть свой инвентарь карт")
     async def inventory(self, ctx):
-        pass
+        data = self.cursor.execute(f"""SELECT * from users WHERE id = {ctx.author.id}""").fetchall()[0][12:]
+        cards_data = []
+        count = 1
+        for el in zip(v.all_cards, data):
+            if el[1] != 0:
+                cards_data.append(f'{count}) {el[0]}\t\t\t\t{el[1]}шт.\n')
+                count += 1
+        cards = ''.join(cards_data)
+        await ctx.send(embed=disnake.Embed(
+            description=f" **--ИНВЕНТАРЬ--** \n"
+                        f"{cards}"), ephemeral=True)
 
     @commands.slash_command(name="profile", description="Твоя статистика в целом")
     async def profile(self, ctx):
-        opened = self.cursor.execute(f'SELECT mem_opened FROM users WHERE id = {ctx.author.id}').fetchone()[0]
+        opened = self.cursor.execute(f'SELECT cards_opened FROM users WHERE id = {ctx.author.id}').fetchone()[0]
         cash = self.cursor.execute(f'SELECT cash FROM users WHERE id = {ctx.author.id}').fetchone()[0]
         commons = self.cursor.execute(f"SELECT common FROM users WHERE id = {ctx.author.id}").fetchone()[0]
         uncommons = self.cursor.execute(f"SELECT uncommon FROM users WHERE id = {ctx.author.id}").fetchone()[0]
@@ -120,6 +130,7 @@ class SlashUsers(commands.Cog):
         mythics = self.cursor.execute(f"SELECT mythic FROM users WHERE id = {ctx.author.id}").fetchone()[0]
         secrets = self.cursor.execute(f"SELECT secret FROM users WHERE id = {ctx.author.id}").fetchone()[0]
         legendarys = self.cursor.execute(f"SELECT legendary FROM users WHERE id = {ctx.author.id}").fetchone()[0]
+        craftable = self.cursor.execute(f"SELECT craftable FROM users WHERE id = {ctx.author.id}").fetchone()[0]
         await ctx.send(embed=disnake.Embed(
             description=f" **--ПРОФИЛЬ--**"
                         f"\n"
@@ -131,7 +142,8 @@ class SlashUsers(commands.Cog):
                         f"\n Получено эпических карт: **{epics}**"
                         f"\n Получено мифических карт: **{mythics}**"
                         f"\n Получено легендарных карт: **{legendarys}**"
-                        f"\n Получено секретных карт: **{secrets}**"))
+                        f"\n Получено секретных карт: **{secrets}**"
+                        f"\n Созданно карт: **{craftable}**"))
 
     @commands.slash_command(name="help", description="Просмотреть комманды и что они делают.")
     async def help_commands(self, ctx):

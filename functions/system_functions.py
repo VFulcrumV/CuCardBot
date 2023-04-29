@@ -86,5 +86,3 @@ def crafting_cards(name):
                 variants_of_end_cards.append(i)
     end_card = choice(variants_of_end_cards)
     return [name, end_card, cost, rarity_after_crafting]
-
-

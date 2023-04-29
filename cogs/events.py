@@ -1,4 +1,5 @@
-import disnake
+import logging
+
 from disnake.ext import commands
 
 from CuCardBot.functions import data_base_functions as db
@@ -21,16 +22,19 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_slash_command_error(self, ctx, error):
-        await ctx.send(f'Ошибка в использовании комманды: {error}'
-                       f'Тип ошибки: {type(error)}', ephemeral=True)
-        print(f'Ошибка в использовании комманды: {error}')
-        print(f'Тип ошибки: {type(error)}')
+        if isinstance(error, commands.CommandInvokeError):
+            await ctx.send(f'Ошибка в использовании команды: неверно заполнены аргументы', ephemeral=True)
+        else:
+            logging.basicConfig(level=logging.WARNING, filename="log.log", filemode="w",
+                                format="%(asctime)s %(levelname)s %(message)s")
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        await ctx.send(f'Ошибка в использовании комманды: {error}\n Тип ошибки: {type(error)}')
-        print(f'Ошибка в использовании комманды: {error}')
-        print(f'Тип ошибки: {type(error)}')
+        if isinstance(error, commands.CommandInvokeError):
+            await ctx.send(f'Ошибка в использовании команды: неверно заполнены аргументы')
+        else:
+            logging.basicConfig(level=logging.WARNING, filename="log.log", filemode="w",
+                                format="%(asctime)s %(levelname)s %(message)s")
 
 
 def setup(bot):

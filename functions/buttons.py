@@ -44,7 +44,6 @@ class AfterCraftButtons(disnake.ui.View):
         self.cursor = self.connection.cursor()
         self.num_cards = db.number_of_cards_in_inv(self)
         self.persone_money = db.member_money(self)
-        print(self.num_cards)
 
     @disnake.ui.button(label="🔨Да🔨", style=disnake.ButtonStyle.green)
     async def sell(self, button: disnake.ui.Button, inter: disnake.CommandInteraction):
@@ -58,7 +57,8 @@ class AfterCraftButtons(disnake.ui.View):
                 db.take_away_card(self, self.author, self.name, 2)
             else:
                 await inter.response.send_message(f"У вас не хватает монет или самих карточек ("
-                                                   f"нужно **{self.cost}** :coin: и *2* карточки **{self.name}**)")
+                                                   f"нужно **{self.cost}** :coin: и *2* карточки **{self.name}**)",
+                                                  ephemeral=True)
         self.stop()
 
     @disnake.ui.button(label="❌Нет❌", style=disnake.ButtonStyle.red)

@@ -1,7 +1,5 @@
 import os
 
-from typing import Optional
-
 import disnake
 from disnake.ext import commands
 
@@ -29,11 +27,12 @@ async def unload(ctx, extention):
 @commands.is_owner()
 async def reload(ctx, extention):
     bot.reload_extension(f'cogs.{extention}')
-
-
-for filename in os.listdir('cogs'):
-    if filename.endswith('.py'):
-        bot.load_extension(f'cogs.{filename[:-3]}')
+#
+#
+# for filename in os.listdir('cogs'):
+#     print(43)
+#     if filename.endswith('.py'):
+#         bot.load_extension(f'cogs.{filename[:-3]}')
 
 if __name__ == '__main__':
-    bot.run('OTcxNzczOTU2NjYxMDc2MDI4.Goqw_E.I66bmpmJhZHPQ1I0FPIWTEgULevqvX6z5P0o_w')
+    bot.run('OTcxNzczOTU2NjYxMDc2MDI4.GxQv5l.iSP3V001KwCfX8XXHvHT5MY2YVonsBIR1UYec4')
