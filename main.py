@@ -33,4 +33,4 @@ for filename in os.listdir('cogs'):
         bot.load_extension(f'cogs.{filename[:-3]}')
 
 if __name__ == '__main__':
-    bot.run('OTcxNzczOTU2NjYxMDc2MDI4.GxQv5l.iSP3V001KwCfX8XXHvHT5MY2YVonsBIR1UYec4')
+    bot.run('token')
